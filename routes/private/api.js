@@ -167,4 +167,28 @@ module.exports = function (app) {
           return res.status(400).send("Failed.You have no subscription!");
         }
  });
+   app.post("/api/v1/station", async function (req, res){
+  const {stationName} = req.body;
+  if(!stationName){
+    return res.status(400).send("Please enter name for the new station");
+  }
+  
+
+  const newstation = {
+  stationname : stationName ,
+  stationtype : "normal",
+  stationposition : null,
+  stationstatus :"new created"
+
+  };
+
+  try {
+    const station = await db("se_project.stations").insert(newstation).returning("*");
+
+    return res.status(200).json(station );
+  } catch (e) {
+    console.log(e.message);
+    return res.status(400).send("Could not create station");
+  }
+});
 };
