@@ -191,4 +191,233 @@ module.exports = function (app) {
     return res.status(400).send("Could not create station");
   }
 });
+app.post("/api/v1/station", async function (req, res){
+  const {stationName} = req.body;
+  if(!stationName){
+    return res.status(400).send("Please enter name for the new station");
+  }
+  
+
+  const newstation = {
+  stationname : stationName ,
+  stationtype : "normal",
+  stationposition : null,
+  stationstatus :"new created"
+
+  };
+
+  try {
+    const station = await db("se_project.stations").insert(newstation).returning("*");
+
+    return res.status(200).json(station );
+  } catch (e) {
+    console.log(e.message);
+    return res.status(400).send("Could not create station");
+  }
+});
+
+app.put("/api/v1/station/:stationId", async function (req, res) {
+  try {
+    const id = req.params.stationId;
+    console.log(`id :  ${id}`, req.body.stationname);
+    const response = await db("se_project.stations")
+      .where("id", "=", id)
+      .update({
+        stationname: req.body.stationname,
+      })
+      .returning("*");
+
+    //db.raw(`update se_project.stations set stationname = ${req.body.stationname} where id = ${id};`);
+    console.log(`response :  ${response}`);
+    return res.status(200).send("updated successfully");
+    //return res.status(200).json(response );
+  } catch (e) {
+    console.log(e.message);
+    return res.status(400).send("Could not update station name");
+  }
+});
+
+app.delete("/api/v1/station/:stationId", async (req, res) => {
+  const id = req.params.stationId;
+
+  try {
+    const station = await db("se_project.stationroutes")
+      .select(["routeid"])
+      .where({ stationid: id });
+
+    if (station.length === 0) {
+      return res.status(404).send();
+    }
+
+    for (let i = 0; i < station.length; i++) {
+      const routeId = station[i].routeid;
+      const from = await db("se_project.routes")
+        .select(["fromstationid"])
+        .where({ id: routeId });
+      const to = await db("se_project.routes")
+        .select(["tostationid"])
+        .where({ id: routeId });
+
+      if (from.length > 0||to.length>0) {
+        await db("se_project.routes")
+          .where({ fromstationid: id })
+          .update({ fromstationid: from[0].fromstationid - 1 });
+
+        await db("se_project.routes")
+        .where({ tostationid: id })
+        .update({ tostationid: from[0].tostationid +1 });
+      
+      }
+
+    }
+
+    const response = await db("se_project.routes").returning("*");
+    res.send(response);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send();
+  }
+
+
+  try {
+    const response2 = await db("se_project.stations")
+      .where("id", "=", id)
+      .del();
+
+    return res.status(200).json(response);
+  } catch (e) {
+    console.log(e.message);
+    return res.status(400).send("Could not delete station");
+  }
+});
+
+app.get("/api/v1/station", async function (req, res) {
+try{
+    const station = await db("se_project.stations")
+      .select('*');
+      
+    
+      if (station.length===0){
+        return res.status(404).send("no stations here");
+
+      }
+      else{
+        return res.status(200).json(station);
+      }
+    }catch{
+      console.log(e.message);
+    return res.status(400).send("error");
+      
+   }
+
+  
+  });
+  
+
+
+app.get("/api/v1/station/:stationId", async function (req, res) {
+  const id = req.params.stationId;
+
+  try {
+    const station = await db("se_project.stationroutes")
+      .select(["routeid"])
+      .where({ stationid: id });
+
+    if (station.length === 0) {
+      return res.status(404).send();
+    }
+
+    for (let i = 0; i < station.length; i++) {
+      const routeId = station[i].routeid;
+      const from = await db("se_project.routes")
+        .select(["fromstationid"])
+        .where({ id: routeId });
+      const to = await db("se_project.routes")
+        .select(["tostationid"])
+        .where({ id: routeId });
+
+      if (from.length > 0) {
+        await db("se_project.routes")
+          .where({ fromstationid: id })
+          .update({ fromstationid: from[0].fromstationid - 1 });
+      }
+
+    }
+
+    const response = await db("se_project.routes").returning("*");
+    res.send(response);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send();
+  }
+});
+
+app.post("/api/v1/routes", async function (req, res) {
+  const { newStationId, connectedStationId, routeName } = req.body;
+  const newroute = {
+    routename: routeName,
+    fromstationid: newStationId,
+    tostationid: connectedStationId,
+  };
+
+  try {
+    const route = await db("se_project.routes")
+      .insert(newroute)
+      .returning("*");
+    return res.status(200).json(route);
+  } catch (e) {
+    console.log(e.message);
+    return res.status(400).send("Could not create route");
+  }
+});
+
+app.put("/api/v1/route/:routeId", async function (req, res){
+
+  try {
+    const id = req.params.routeId;
+    
+    console.log(`id :  ${id}`,req.body.routeName);
+    const response = await db("se_project.routes").where('id','=',id).update({
+      routename:req.body.routeName
+        }).returning("*");
+
+    //db.raw(`update se_project.stations set stationname = ${req.body.stationname} where id = ${id};`);
+    console.log(`response :  ${response}`)
+    return res.status(200).send("updated  route successfully")
+    //return res.status(200).json(response );
+  } catch (e) {
+    console.log(e.message);
+    return res.status(400).send("Could not update route name");
+  }
+
+  
+});
+
+app.put("/api/v1/zones/zoneId", async function (req, res) {
+  try {
+    const id = req.params.zoneId;
+    //console.log(`id :  ${id}`, req.body.stationname);
+    const response = await db("se_project.zones")
+      .where("id", "=", id)
+      .update({
+        price: req.body.price,
+      })
+      .returning("*");
+
+    //db.raw(`update se_project.stations set stationname = ${req.body.stationname} where id = ${id};`);
+    //console.log(`response :  ${response}`);
+    return res.status(200).send("updated successfully");
+    //return res.status(200).json(response );
+  } catch (e) {
+    console.log(e.message);
+    return res.status(400).send("Could not update zone price");
+  }
+});
+
+
+
+
+
+
+
 };
