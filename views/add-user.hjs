@@ -44,7 +44,7 @@
         <li ><a href="/stations_example">stations</a></li>
         <li><a href="/users">Users</a></li>
         <li><a class="active" href="/users/add">Add Users</a></li>
-         <li><a href="/passwordreset">Reset</a></li>
+         <li><a href="/passwordreset">ResetPassword</a></li>
         <li><a href="/">Logout</a></li>    
         </ul>
   </nav>

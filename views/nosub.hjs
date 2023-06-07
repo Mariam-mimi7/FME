@@ -23,7 +23,24 @@
       </nav>
     </div>
     <div class="center">
-      <img src="images/404.jpg">
+      <img src="images/nosubb.jpg">
+    </div>
+     <div class="center">
+    <style>
+           h1 {
+      color: rgb(66, 133, 211);
+      font-size: 20px;
+    }
+    a {
+      color: rgb(66, 133, 211);
+      font-size: 15px;
+    }
+  </style>
+  <h1> Want to purchase a subscription? How about we show you the subscriptions we offer</h1>
+        <a href="/viewsubscriptions">
+            <button>View Subscriptions</button>
+        </a>
+  </form>
     </div>
   </body>
 </html>

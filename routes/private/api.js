@@ -50,14 +50,15 @@ module.exports = function (app) {
  //Reset Password
  app.put("/api/v1/password/reset" , async function(req , res){
   const user = await getUser(req);
-  const newpassword = req.body.newpassword;
+  newpassword = req.body.newpassword;
   if(!newpassword){
      return res.status(400).send("Required!");
   }else{
       db.from("se_project.users")
       .where("email" , user.email)
       .update({password:newpassword}).then(function(rowsUpdated){
-        res.status(200).json({message: 'password updated'})});
+        res.status(200).send("Password Updated")});
+      
     }
  });
 
@@ -140,7 +141,21 @@ module.exports = function (app) {
    .insert(transaction_data).returning('*')
 
   });
-
+  app.get("/api/v1/subs" , async function(req,res){
+    try{
+        const userID = await getUser(req);
+        const HasSub = await db.select("userid").from("se_project.subsription");
+        if(HasSub.userid == userID.id){
+        const subs = await db.select("subtype")
+        .from("se_project.subsription");
+        res.status(200).send(subs);
+        }else{
+          res.status(200).send('You Have no subscriptions');
+        }
+        }catch(e){
+        res.status(500).send(e);
+    }
+  });
  app.post("/api/v1/tickets/purchase/subscription" , async function(req , res){
    const userID = await getUser(req);
    const {subId , origin , destination , tripDate} = req.body;

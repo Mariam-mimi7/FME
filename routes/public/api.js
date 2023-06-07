@@ -13,6 +13,7 @@ app.get("/api/v1/zones" , async function(req,res){
       res.status(500).send(e);
   }
 });
+
 //Get  Price
   app.get("/api/v1/tickets/price/:originId/:destinationId", async function(req, res) {    
     const { originId, destinationId } = req.params;  // using req.params instead of req.query

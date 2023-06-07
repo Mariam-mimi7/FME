@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <head>
+      <link rel='stylesheet' href='/styles/bootstrap.min.css' />
+      <link rel='stylesheet' href='/styles/style.css' />
+      <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
+      <script src="/js/bootstrap.min.js" type="text/javascript"></script>
+    </head>
+  </head>
+  <style>
+    .navbar-inverse {
+      background-color: rgb(155, 103, 223);
+    }
+   .navbar-inverse .navbar-nav li a {
+    color: rgb(8, 8, 8);
+}
+  </style>
+  <body>
+    <div>
+    <nav class="navbar navbar-inverse" style="padding-left:130px;">
+           <ul class="nav navbar-nav">
+        <li><a href="/dashboard">Home</a></li>
+        <li ><a href="/stations_example">stations</a></li>
+        <li><a href="/users">Users</a></li>
+        <li><a class="active" href="/users/add">Add Users</a></li>
+        <li><a class="active" href="/passwordreset">ResetPassword</a></li>
+        <li><a href="/">Logout</a></li>    
+        </ul>
+  </nav>
+    </div>
+      <table class="table">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Sub Type</th>
+            <th scope="col">Zone Id</th>
+            <th scope="col">User Id</th>
+            <th scope="col">nooftickets</th>
+          </tr>
+          {{#sub}}
+            <tr>
+              <td>{{id}}</td>
+              <td>{{subtype}}</td>
+              <td>{{zoneid}}</td>
+              <td>{{userid}}</td>
+              <td>{{nooftickets}}</td>
+            </tr>
+            {{/sub}}
+        </thead>
+      </table>
+      <div class="center">
+    <style>
+    a {
+      color: rgb(221, 52, 221);
+      font-size: 20px;
+    }
+  </form>
+    </div>
+  </body>
+</html>
