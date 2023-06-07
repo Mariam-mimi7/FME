@@ -35,18 +35,18 @@ module.exports = function(app) {
     return res.render('nosub', userID);
    })
    app.get('/subscriptions', async function(req, res) {
-     user = await getUser(req);
-     HasSub = await db
-      .select('userid')
-      .from('se_project.subsription')
-    if (HasSub.length > 0) { // Check if length is greater than 0
        user = await getUser(req);
+       HasSub = await db
+        .select('userid')
+        .from('se_project.subsription')
+        .where('userid','=', user.userid);
+      if (HasSub.length>0) { // Check if length is greater than 0
        const sub = await db
         .select('*')
         .from('se_project.subsription')
         .where('userid','=', user.userid);
-      return res.render('subscriptions', {sub });
-    } else {
+       return res.render('subscriptions', {sub});
+      } else {
       return res.status(301).redirect('/nosub');
     }
   });
