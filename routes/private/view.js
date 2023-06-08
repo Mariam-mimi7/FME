@@ -72,7 +72,7 @@ module.exports = function(app) {
  
   });
   app.get('/subscriptions/purchase' , async function(req , res){
-    const user = await getUser(req);
-    return res.render('subscriptions/purchase' , user)
+    const users = await getUser(req);
+    return res.render('subscriptions/purchase' , users)
   })
 };
