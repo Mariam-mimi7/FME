@@ -35,7 +35,7 @@
             <th scope="col">ID</th>
             <th scope="col">Sub Type</th>
             <th scope="col">Zone Id</th>
-            <th scope="col">User Id</th>
+            <th scope="col">User id</th>
             <th scope="col">nooftickets</th>
           </tr>
           {{#sub}}
@@ -45,6 +45,7 @@
               <td>{{zoneid}}</td>
               <td>{{userid}}</td>
               <td>{{nooftickets}}</td>
+
             </tr>
             {{/sub}}
         </thead>
