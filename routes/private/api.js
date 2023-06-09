@@ -98,7 +98,7 @@ module.exports = function (app) {
   });
   app.post('/api/v1/refund/:ticketId', async function(req, res) {
     try {
-      const ticketId = req.params.ticketId;
+      const {ticketId} = req.params;
       const user = await getUser(req);
       const ticket = await db('se_project.tickets')
                       .where('id', ticketId)
@@ -327,6 +327,9 @@ app.post("/api/v1/tickets/purchase/subscription" , async function(req , res){
           return res.status(400).send("Failed.You have no subscription!");
         }
  });
+ //Mariam
+ //----------------------------------------------------------------------------
+ //Farah w Esraa
    app.post("/api/v1/station", async function (req, res){
   const {stationName} = req.body;
   if(!stationName){
@@ -584,57 +587,14 @@ app.put("/api/v1/zones/:zoneId", async function (req, res) {
   }
 });
 
-
-/*app.delete("/api/v1/route/:routeId", async (req, res) => {
-  const id = req.params.routeId;
-
-  try {
-    const stationidfrom=await db("se_project.routes").select(["fromstationid"]).where("routeid", "=", id);
-    const stationidto=await db("se_project.routes").select(["tostationid"]).where("routeid", "=", id);
-    for (let i = 0; i < stationidfrom.length; i++) {
-      const status = await db("se_project.stations").select(["stationstatus"]).where("id","=",stationidfrom[i]);
-      if(status==="middle"){
-        return res.status(400).send("Could not delete middle route");
-
-      }
-    }
-
-    for (let y = 0; y < stationidto.length; y++) {
-      const status = await db("se_project.stations").select(["stationstatus"]).where("id","=",stationidto[y]);
-      if(status==="middle"){
-        return res.status(400).send("Could not delete middle route");
-
-      }
-    }
-
-  
-    
-    const response = await db("se_project.routes").where("id", "=", id).del();
-    const stationend = await db("se_project.routes").select("*").where("fromstationid","=",stationidfrom).where("tostationid","=",stationidto);
-    if(stationend.length===0){
-      await db("se_project.stations").where("id","=",stationidfrom).update({stationposition}="end");
-      await db("se_project.stations").where("id","=",stationidto).update({stationstatus}="new created");
-
-    }
-    
-    return res.status(200).json(response);
-  } catch (e) {
-    console.log(e.message);
-    return res.status(400).send("Could not delete route");
-  }
-});
-*/
-
 app.delete("/api/v1/route/:routeId", async (req, res) => {
   const routeId = req.params.routeId;
   const route = await db("se_project.routes")
     .where("id", "=", routeId)
     .first();
-
   if (!route) {
     return res.status(400).send("Route not found");
   }
-
   const { fromstationid, tostationid } = route;
 
   const [fromstation, tostation] = await Promise.all([
@@ -670,7 +630,7 @@ app.put("/api/v1/ride/simulate", async function (req, res) {
     const tripDate = req.body.tripDate;
     await db("se_project.rides")
       .where({ origin: origin, destination: destination, tripdate: tripDate })
-      .update({ status: "completed" })
+      .update({ status: "Active" })
       .returning("*");
     return res.status(200).send("accepted successfully");
   } catch (e) {
@@ -678,7 +638,64 @@ app.put("/api/v1/ride/simulate", async function (req, res) {
     return res.status(400).send("error");
   }
 });
+//Request Senior 
+app.post('/api/v1/senior/request',async function(req, res){ 
+  try{
+  const nationalId = req.body.nationalId;
+  const user = await getUser(req);
+  if(!nationalId){
+    return res.status(400).send("Please enter nationalid");
+  }
+  const newrequest = {
+  status :"Pending",
+  userid : user.userid,
+  nationalid :nationalId,
+  };
+    const request = await db("se_project.senior_requests").where('nationalid' , '=' ,nationalId ).insert(newrequest);
+    if(request)
+    return res.status(200).send("Successfully Requested!");
+  } catch (e) {
+    console.log(e.message);
+    return res.status(400).send("Could not request senior");
+  }
+});
 app.put('/api/v1/requests/senior/:requestId', async function(req, res) {
+  try {
+    const user = await getUser(req);
+    const { requestStatus } = req.body;
+    const ID = req.params.requestId;
+
+    const senior = await db('se_project.senior_requests').select('nationalid', 'userid').where('id', '=', ID);
+    if(senior.length > 0) {
+      if(senior[0].nationalid == 3 && requestStatus == "Accept") {
+        db.from("se_project.senior_requests")
+          .where("id", ID)
+          .update({ status: requestStatus })
+          .then(function(rowsUpdated) {
+            res.status(200).send("Request Accepted!")
+          });
+      } else if(senior[0].nationalid !== 3 && requestStatus == "Reject") {
+        db.from("se_project.senior_requests")
+          .where("id", ID)
+          .update({ status: requestStatus })
+          .then(function(rowsUpdated) {
+            res.status(200).send("Request Rejected!")
+          });
+      } else if (senior[0].nationalid !== 3 && requestStatus == "Accept")  {
+        res.status(400).send("Something went wrong")
+      }
+      else if (senior[0].nationalid == 3 && requestStatus == "Reject")  {
+        res.status(400).send("Something went wrong")
+      }
+    } else {
+      res.status(404).send("Request not found")
+    }
+  } catch (e) {
+    console.log(e);
+    return res.status(400).send("error");
+  }
+});
+/*app.put('/api/v1/requests/senior/:requestId', async function(req, res) {
   try {
     const id = req.params.requestId;
     await db("se_project.senior_requests")
@@ -704,7 +721,7 @@ app.put('/api/v1/requests/senior/:requestId', async function(req, res) {
     console.log(e.message);
     return res.status(400).send("Could not accept senior");
   }
-});
+});*/
 
 app.put('/api/v1/requests/refunds/:requestId', async function(req, res) {
   try {
@@ -739,5 +756,3 @@ app.put('/api/v1/requests/refunds/:requestId', async function(req, res) {
 
 };
 
-
-};
