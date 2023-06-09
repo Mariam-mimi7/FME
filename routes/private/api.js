@@ -97,7 +97,7 @@ module.exports = function (app) {
   }
   });
   app.post('/api/v1/refund/:ticketId', async function(req, res) {
-    //try {
+    try {
       const ticketId = req.params.ticketId;
       const user = await getUser(req);
       const ticket = await db('se_project.tickets')
@@ -106,6 +106,9 @@ module.exports = function (app) {
                       .first();
       const ride = await db('se_project.rides').where("ticketid", ticketId).first();
        tran = await db('se_project.transactions').where("userid", '=',user.userid).first();
+       if(tran.length==0){
+        return res.status(400).send('Ya haramy enta mesh dafe3 ticket ')
+       }
       if (!ticket) {
         return res.status(400).send("Invalid Ticket ID");
       }
@@ -144,10 +147,10 @@ module.exports = function (app) {
       } else {
         return res.status(400).send("Oops :(");
       }
-    /*} catch (error) {
+    } catch (error) {
       console.log(error);
       return res.status(400).send("Something went wrong");
-    }*/
+    }
   });
  //Reset Password
  app.put("/api/v1/password/reset" , async function(req , res){
