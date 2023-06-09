@@ -103,4 +103,25 @@ module.exports = function(app) {
     const user = await getUser(req);
     return res.render('prices', user)
    });
+  
+   app.get('/manage/stations/create' , async function(req , res){
+    const users = await getUser(req);
+    return res.render('manage/stations/create' , users)
+  });
+  app.get('/manage/stations/edit/:stationId' , async function(req , res){
+    const users = await getUser(req);
+    return res.render('manage/stations/edit/stationId' , users)
+  });
+  app.get('/manage/routes/create' , async function(req , res){
+    const users = await getUser(req);
+    return res.render('manage/routes/create' , users)
+  });
+  app.get('/manage/zones' , async function(req , res){
+    const users = await getUser(req);
+    const zones = await db.select('*').from('se_project.zones');
+
+    return res.render('manage/zones' ,{...users,zones})
+  });
+
+};
 };
