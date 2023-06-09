@@ -38,6 +38,10 @@ module.exports = function(app) {
     const userID = await getUser(req);
     return res.render('NoTicket', userID);
    })
+   app.get('/NoRide' , async function(req , res){
+    const userID = await getUser(req);
+    return res.render('NoRide', userID);
+   })
    app.get('/subscriptions', async function(req, res) {
        user = await getUser(req);
        HasSub = await db
@@ -54,7 +58,7 @@ module.exports = function(app) {
       return res.status(301).redirect('/nosub');
     }
   });
-  app.get('/tickets' , async function(req , res){
+  app.get('/mytickets' , async function(req , res){
    user = await getUser(req);
    HasTicket = await db
         .select('userid')
@@ -65,10 +69,29 @@ module.exports = function(app) {
         .select('origin' , 'destination' , 'tripdate')
         .from('se_project.tickets')
         .where('userid','=', user.userid);
-       return res.render('tickets', {ticket});
+       return res.render('mytickets', {ticket});
       } else {
       return res.status(301).redirect('/NoTicket');
     }
+  });
+  app.get('/rides', async function(req, res) {
+   
+       user = await getUser(req);
+       hasRide = await db
+        .select('userid')
+        .from('se_project.rides')
+        .where('userid', '=', user.userid);
+  
+      if (hasRide.length > 0) {
+        const ride = await db
+          .select('status', 'origin', 'destination', 'tripdate')
+          .from('se_project.rides')
+          .where('userid', '=', user.userid);
+  
+        return res.render('rides', { ride });
+      } else {
+        return res.status(301).redirect('/NoRide');
+      }
   });
  
   // Register HTTP endpoint to render /users page
@@ -103,25 +126,8 @@ module.exports = function(app) {
     const user = await getUser(req);
     return res.render('prices', user)
    });
-  
-   app.get('/manage/stations/create' , async function(req , res){
-    const users = await getUser(req);
-    return res.render('manage/stations/create' , users)
-  });
-  app.get('/manage/stations/edit/:stationId' , async function(req , res){
-    const users = await getUser(req);
-    return res.render('manage/stations/edit/stationId' , users)
-  });
-  app.get('/manage/routes/create' , async function(req , res){
-    const users = await getUser(req);
-    return res.render('manage/routes/create' , users)
-  });
-  app.get('/manage/zones' , async function(req , res){
-    const users = await getUser(req);
-    const zones = await db.select('*').from('se_project.zones');
-
-    return res.render('manage/zones' ,{...users,zones})
-  });
-
-};
+   app.get('/tickets' , async function(req , res){
+    const user = await getUser(req);
+    return res.render('tickets', user)
+   });
 };
