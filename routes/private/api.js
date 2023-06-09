@@ -47,6 +47,63 @@ module.exports = function (app) {
     }
    
   });
+ /*app.post('/api/v1/refund/:ticketId', async function(req, res) {
+    try {
+      const ticketID = req.params.ticketId;
+      const user = await getUser(req);
+        const ticket = await db('se_project.tickets').where('id', ticketID);
+        const userticket = await db('se_project.tickets').where('userid','=', user.userid);
+        A = await db('se_project.ridess').where("ticketid" ,'=',ticketID).first();
+        E = await db('se_project.ridess').where("ticketid" ,'=', ticketID).first();
+      if (!ticket) {
+        return res.status(400).send("Invalid Ticket ID");
+      } else {
+        
+          if (A && A.status === "Active") {
+            const ride = await db('se_project.ridess').where("ticketid" ,'=', ticketID).del();
+            if (ride) {
+              return res.status(200).send("Ticket Refunded!");
+            } else {
+              return res.status(400).send("Ticket Refund Failed!");
+            }
+          } if(E && E.status === "Expired") {
+            return res.status(400).send("You cannot refund an expired ticket.");
+          }
+        } 
+      }catch (err) {
+      console.error(err);
+      return res.status(500).send("Internal Server Error");
+    }
+  });*/
+  app.post('/api/v1/refund/:ticketId', async function(req, res) {
+    try {
+      const ticketId = req.params.ticketId;
+      const user = await getUser(req);
+      const ticket = await db('se_project.tickets')
+                      .where('id', ticketId)
+                      .where('userid','=', user.userid)
+                      .first();
+      const ride = await db('se_project.rides').where("ticketid", ticketId).first();
+  
+      if (!ticket) {
+        return res.status(400).send("Invalid Ticket ID");
+      }
+      
+      if(ride) {
+        if(ride.status === "Active"){
+          await db('se_project.rides').where("ticketid", ticketId).del();
+          return res.status(200).send("Ticket Refunded!");
+        } else if (ride.status === "Expired") {
+          return res.status(400).send("You cannot refund an expired ticket.");
+        }
+      } else {
+        return res.status(400).send("Oops :(");
+      }
+    } catch (error) {
+      console.log(error);
+      return res.status(400).send("Something went wrong");
+    }
+  });
  //Reset Password
  app.put("/api/v1/password/reset" , async function(req , res){
   const user = await getUser(req);
@@ -96,6 +153,7 @@ module.exports = function (app) {
    }
   }
  });
+ 
  app.post("/api/v1/payment/subscription" , async function(req,res){
    const { creditCardNumber , holderName , payedAmount , subType , zoneId } = req.body;
    const user = await getUser(req);
@@ -182,6 +240,7 @@ module.exports = function (app) {
           return res.status(400).send("Failed.You have no subscription!");
         }
  });
+ 
    app.post("/api/v1/station", async function (req, res){
   const {stationName} = req.body;
   if(!stationName){
