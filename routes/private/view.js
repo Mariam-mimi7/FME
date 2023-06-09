@@ -34,6 +34,10 @@ module.exports = function(app) {
     const userID = await getUser(req);
     return res.render('nosub', userID);
    })
+   app.get('/NoTicket' , async function(req , res){
+    const userID = await getUser(req);
+    return res.render('NoTicket', userID);
+   })
    app.get('/subscriptions', async function(req, res) {
        user = await getUser(req);
        HasSub = await db
@@ -63,7 +67,7 @@ module.exports = function(app) {
         .where('userid','=', user.userid);
        return res.render('tickets', {ticket});
       } else {
-      return res.status(301).redirect('/nosub');
+      return res.status(301).redirect('/NoTicket');
     }
   });
  
@@ -78,9 +82,9 @@ module.exports = function(app) {
     const stations = await db.select('*').from('se_project.stations');
     return res.render('stations_example', { ...user, stations });
   });
-  app.get('/passwordreset', async function(req, res) {
+  app.get('/resetPassword', async function(req, res) {
     const users = await getUser(req);
-    return res.render('passwordreset', {users});
+    return res.render('resetPassword', {users});
   });
   app.get('/viewsubscriptions', async function (req, res) { 
       subs = await db.select('subtype' , 'nooftickets').from('se_project.subs');
@@ -90,5 +94,13 @@ module.exports = function(app) {
   app.get('/subscriptions/purchase' , async function(req , res){
     const users = await getUser(req);
     return res.render('subscriptions/purchase' , users)
-  })
+  });
+  app.get('/tickets/purchase' , async function(req , res){
+   const user = await getUser(req);
+   return res.render('tickets/purchase', user)
+  });
+  app.get('/prices' , async function(req , res){
+    const user = await getUser(req);
+    return res.render('prices', user)
+   });
 };
