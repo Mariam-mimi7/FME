@@ -50,6 +50,22 @@ module.exports = function(app) {
       return res.status(301).redirect('/nosub');
     }
   });
+  app.get('/tickets' , async function(req , res){
+   user = await getUser(req);
+   HasTicket = await db
+        .select('userid')
+        .from('se_project.tickets')
+        .where('userid','=', user.userid);
+      if (HasTicket.length>0) { // Check if length is greater than 0
+       const ticket = await db
+        .select('origin' , 'destination' , 'tripdate')
+        .from('se_project.tickets')
+        .where('userid','=', user.userid);
+       return res.render('tickets', {ticket});
+      } else {
+      return res.status(301).redirect('/nosub');
+    }
+  });
  
   // Register HTTP endpoint to render /users page
   app.get('/users', async function(req, res) {
