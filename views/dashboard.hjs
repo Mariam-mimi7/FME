@@ -41,7 +41,7 @@
         <li ><a href="/stations_example">stations</a></li>
         <li><a href="/users">Users</a></li>
         <li><a class="active" href="/users/add">Add Users</a></li>
-         <li><a href="/passwordreset">ResetPassword</a></li>
+         <li><a href="/resetPassword">ResetPassword</a></li>
         <li><a href="/">Logout</a></li>    
         </ul>
   </nav>
@@ -80,6 +80,25 @@
        <body>
         <a href="/tickets">
             <button>View Ticket</button>
+        </a>
+       </body>
+  </div>
+   <div class="padding-left">
+    <style>
+    h1 {
+      color: rgb(66, 133, 211);
+      font-size: 25px;
+    }
+    a{
+      color: rgb(66, 133, 211);
+      font-size: 15px;
+      
+    }
+  </style>
+      <h1>Check Ticket Prices</h1>
+       <body>
+        <a href="/prices">
+            <button>Check</button>
         </a>
        </body>
   </div>
