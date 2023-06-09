@@ -3,39 +3,7 @@ const { v4 } = require("uuid");
 const db = require("../../connectors/db");
 const roles = require("../../constants/roles");
 module.exports = function (app) {
-//Get zones
-app.get("/api/v1/zones" , async function(req,res){
-  try{
-      const zones = await db.select("*")
-      .from("zones");
-      res.status(200).send(zones);
-      }catch(e){
-      res.status(500).send(e);
-  }
-});
 
-//Get  Price
-  app.get("/api/v1/tickets/price/:originId/:destinationId", async function(req, res) {    
-    const { originId, destinationId } = req.params;  // using req.params instead of req.query
-    const from = await db("se_project.routes")
-      .select(["fromstationid"])
-      .where("fromstationid", "=", originId);
-    const to = await db("se_project.routes")
-      .select(["tostationid"])
-      .where("tostationid", "=", destinationId);
-  
-    for (let i = 0; i < from.length; i++) {
-      for (let j = 0; j < to.length; j++) {
-        if (from[i].fromstationid >= 1 && to[j].tostationid <=9) {
-          res.status(200).send("From Stations 1 through 9 = Ticket price is 5LE");
-        } else if (from[i].fromstationid >=10 && to[j].tostationid <= 16) {
-          res.status(200).send("From Stations 10 through  16 = Ticket price is 7LE");
-        } else if (from[i].fromstationid >= 16 && to[j].tostationid > 16) {
-          res.status(200).send("From Station 16 and more = Ticket price is 10LE");
-        }
-      }
-    }
-  });
 
 //create user 
 app.post("/api/v1/user/login", async function (req, res) {
