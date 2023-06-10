@@ -63,7 +63,16 @@
               <input id="check" name="check" type="button" value="Check" class="btn btn-primary">
           </div>
       </div>
-     
+      <div3 class="center">
+      <style>
+      div3 {
+            position: absolute;
+            top: 60px;
+            left: 0px;
+        }
+        </style>
+      <img src="images/Map.jpg" style="width: 350px; height: 300px;">
+    </div3>
       </form>
     <br/>
     </div>
