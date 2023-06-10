@@ -701,34 +701,6 @@ app.put('/api/v1/requests/senior/:requestId', async function(req, res) {
     return res.status(400).send("error");
   }
 });
-/*app.put('/api/v1/requests/senior/:requestId', async function(req, res) {
-  try {
-    const id = req.params.requestId;
-    await db("se_project.senior_requests")
-      .select("nationalid", "userid")
-      .where('id', '=', id)
-      .then(async(rows) => {
-        if (rows.length == 0) {
-          return res.status(404).send("Senior request not found");
-        } else {
-          await db("se_project.senior_requests")
-            .where('id', '=', id)
-            .update({ status: req.body.seniorStatus })
-            .returning('*').then(async updatedRequest => {
-              const helper2 = updatedRequest[0];
-              await db("se_project.users")
-                .where('id', '=', helper2.userid)
-                .update({ roleid: 3 });
-              return res.status(200).send("Accepted successfully");
-          });
-        }
-    });
-  } catch (e) {
-    console.log(e.message);
-    return res.status(400).send("Could not accept senior");
-  }
-});*/
-
 app.put('/api/v1/requests/refunds/:requestId', async function(req, res) {
   try {
     const id = req.params.requestId;
