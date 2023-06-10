@@ -42,6 +42,10 @@ module.exports = function(app) {
     const userID = await getUser(req);
     return res.render('NoRide', userID);
    })
+   app.get('/Nope' , async function(req , res){
+    const userID = await getUser(req);
+    return res.render('Nope', userID);
+   })
    app.get('/subscriptions', async function(req, res) {
        user = await getUser(req);
        HasSub = await db
@@ -74,6 +78,34 @@ module.exports = function(app) {
       return res.status(301).redirect('/NoTicket');
     }
   });
+  app.get('/requests/refund' , async function(req , res){
+    user = await getUser(req);
+    Refo = await db
+         .select('userid')
+         .from('se_project.refund_requests')
+         .where('userid','=', user.userid);
+       if (Refo.length>0) { // Check if length is greater than 0
+        const refund = await db
+         .select('status' , 'refundamount')
+         .from('se_project.refund_requests')
+         .where('userid','=', user.userid);
+        return res.render('requests/refund', {refund});
+       } else {
+       return res.status(301).redirect('/NoTicket');
+     }
+   });
+   app.get('/manage/request/viewsenior' , async function(req , res){
+    user = await getUser(req);
+    if (user.id == 2){
+        const senior = await db
+         .select('status' , 'nationalid')
+         .from('se_project.senior_requests')
+         .where('status' ,'=' ,'Pending');
+        return res.render('manage/request/viewsenior', {senior});
+    }else{
+      return res.status(301).redirect('/Nope');
+    }
+   });
   app.get('/rides', async function(req, res) {
    
        user = await getUser(req);
@@ -126,8 +158,26 @@ module.exports = function(app) {
     const user = await getUser(req);
     return res.render('prices', user)
    });
+   app.get('/manage/request/senior' , async function(req , res){
+    const user = await getUser(req);
+    if(user.id ==2){
+    return res.render('manage/request/senior', user)
+    }
+    else{
+      return res.status(301).redirect('/Nope');
+    }
+   });
    app.get('/tickets' , async function(req , res){
     const user = await getUser(req);
     return res.render('tickets', user)
    });
+   app.get('/requests/senior' , async function(req , res){
+    const user = await getUser(req);
+    return res.render('requests/senior', user)
+   });
+   app.get('/manage/routes', async function(req, res) {
+    const user = await getUser(req);
+    const routes = await db.select('*').from('se_project.routes');
+    return res.render('manage/routes', { ...user, routes });
+  });
 };
