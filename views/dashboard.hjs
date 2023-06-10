@@ -49,7 +49,7 @@
     <style>
     h1 {
       color: rgb(66, 133, 211);
-      font-size: 25px;
+      font-size: 20px;
     }
     a{
       color: rgb(66, 133, 211);
@@ -68,17 +68,16 @@
     <style>
     h1 {
       color: rgb(66, 133, 211);
-      font-size: 25px;
+      font-size: 20px;
     }
     a{
       color: rgb(66, 133, 211);
       font-size: 15px;
-      
     }
   </style>
       <h1>View my Ticket</h1>
        <body>
-        <a href="/tickets">
+        <a href="/mytickets">
             <button>View Ticket</button>
         </a>
        </body>
@@ -87,7 +86,7 @@
     <style>
     h1 {
       color: rgb(66, 133, 211);
-      font-size: 25px;
+      font-size: 20px;
     }
     a{
       color: rgb(66, 133, 211);
@@ -101,8 +100,140 @@
             <button>Check</button>
         </a>
        </body>
+   </div>
+        <div class="padding-left">
+    <style>
+    h1 {
+      color: rgb(66, 133, 211);
+      font-size: 20px;
+    }
+    a{
+      color: rgb(66, 133, 211);
+      font-size: 15px;
+      
+    }
+  </style>
+      <h1>View Rides</h1>
+       <body>
+        <a href="/rides">
+            <button>View</button>
+        </a>
+       </body>
   </div>
-    <br/>
-    </div>
-  </body>
-  </html>
+ <div class="padding-left">
+    <style>
+        h1 {
+            color: rgb(66, 133, 211);
+            font-size: 20px;
+        }
+        a{
+            color: rgb(66, 133, 211);
+            font-size: 15px;
+        }
+    </style>
+    <h1>Refund Ticket</h1>
+    <body>
+        <a href="/tickets">
+            <button>Refund</button>
+        </a>
+    </body>
+ </div>
+ <head>
+ <div class="padding-left">
+    <style>
+        h1 {
+            color: rgb(66, 133, 211);
+            font-size: 20px;
+        }
+        a{
+            color: rgb(66, 133, 211);
+            font-size: 15px;
+        }
+    </style>
+    <h1>My Refunds</h1>
+    <body>
+        <a href="/requests/refund">
+            <button>View Refund</button>
+        </a>
+    </body>
+ </div>
+ </head>
+ <div class="padding-left">
+    <style>
+        h1 {
+            color: rgb(66, 133, 211);
+            font-size: 20px;
+        }
+        a{
+            color: rgb(66, 133, 211);
+            font-size: 15px;
+        }
+    </style>
+    <h1>Senior Requesting</h1>
+    <body>
+        <a href="/requests/senior">
+            <button>Request Senior</button>
+        </a>
+    </body>
+ </div>
+  <div1 class="padding-left">
+    <style>
+        h1 {
+            color: rgb(66, 133, 211);
+            font-size: 20px;
+        }
+        a{
+            color: rgb(66, 133, 211);
+            font-size: 15px;
+        }
+    </style>
+    <h1>View Senior requests</h1>
+    <body>
+        <a href="/manage/request/viewsenior">
+            <button>View</button>
+        </a>
+    </body>
+ </div>
+   <div class="padding-left">
+    <style>
+        h1 {
+            color: rgb(10, 10, 10);
+            font-size: 20px;
+        }
+        a{
+            color: rgb(66, 133, 211);
+            font-size: 15px;
+        }
+    </style>
+    <h1>Manage Senior requests</h1>
+    <body>
+        <a href="/manage/request/senior">
+            <button>manage</button>
+        </a>
+    </body>
+ </div>
+ <div2 class="center">
+      <style>
+      div2 {
+            position: absolute;
+            top: 60px;
+            left: 980px;
+        }
+        </style>
+      <img src="images/metroyasta.jpg" style="width: 350px; height: 300px;">
+    </div2>
+     <div3 class="center">
+      <style>
+      div3 {
+            position: absolute;
+            top: 400px;
+            left: 980px;
+        }
+        </style>
+      <img src="images/metrofarah.jpg" style="width: 350px; height: 300px;">
+    </div3>
+</div>
+<br/>
+</div>
+</body>
+</html>
