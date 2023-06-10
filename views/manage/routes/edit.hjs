@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Stations Table</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    .table-header {
+      font-weight: bold;
+    }
+    thead {
+      background-color: #ccc;
+    }
+  </style>
+</head>
+<body>
+  <table id="stations-table" class="table">
+    <thead>
+      <tr class="table-header">
+        <th scope='col'>
+          <label for='route-name'>route Name (original)</label>
+        </th>
+        <th scope='col'>
+          <label for='from-station-id'>from-station-id</label>
+        </th>
+        <th scope='col'>
+          <label for='to-station-id'>to-station-id</label>
+        </th>
+        <th scope='col'>
+          <span>Actions</span>
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#routes}}
+      <tr>
+        <td>{{routename}}</td>
+        <td>{{fromstationid}}</td>
+        <td>{{tostationid}}</td>
+        <td>
+          <div class='input-group'>
+            <input id='txtName-{{id}}' type='text' class='form-control' placeholder='New route name'>
+            <div class='input-group-btn'>
+              <button id='btnUpdateStations-{{id}}' type='button' class='btn btn-primary' name='update route {{routename}}'>Update</button>
+              </div> 
+               <di>
+             <button id="btnDeleteStation-{{id}}" type="button" class="btn btn-danger" name="delete-route" data-id="{{id}}">Delete</button>              </td>
+      </tr>
+      {{/routes}}
+    </tbody>
+  </table>
+  <script>
+$(document).ready(function() {
+  // Add event listener for update button clicks
+  $('button[id^="btnUpdateStations"]').click(function() {
+    const id = $(this).attr('id').replace('btnUpdateStations-', '');
+    const routeName = $('#txtName-' + id).val();
+
+    // Send request to server to update station name
+    $.ajax({
+      url: '/api/v1/routes/' + id,
+      method: 'PUT',
+      data: { routename: routeName },
+      success: function(response) {
+        // Reload page after successful update
+        alert(response);
+        location.reload();
+      },
+      error: function(xhr, status, error) {
+        alert('Error updating route name: ' + error);
+      }
+    });
+  });
+});
+      // Add event listener for delete button clicks
+$('button[id^="btnDeleteStation"]').click(function() {
+  var routeId = $(this).data('id');
+  console.log('Deleting station:', routeId);
+
+  // Send request to server to delete station
+  $.ajax({
+    url: '/api/v1/routes/' + routeId,
+    type: 'DELETE',
+    success: function(response) {
+      console.log('Station deleted:', response);
+      // Reload page after successful delete
+      location.reload(true);
+    },
+    error: function(error) {
+      console.log('Error deleting station:', error);
+      alert('Error deleting route.');
+    }
+  });
+});
+  </script>
+</body>
+</html>
