@@ -9,11 +9,8 @@
     </head>
   </head>
   <style>
-    .navbar-inverse {
-      background-color: rgb(155, 103, 223);
-    }
    .navbar-inverse .navbar-nav li a {
-    color: rgb(8, 8, 8);
+    color: rgb(155, 103, 223);
 }
   </style>
   <body>
