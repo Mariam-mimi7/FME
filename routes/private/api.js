@@ -116,13 +116,13 @@ module.exports = function (app) {
         if(ride.status === "Active"){
           if(tran){
             const refund_data = {
-               status:ride.status,
+               status:"Accepted",
                userid:user.userid,
                refundamount:tran.amount,
                ticketid:ticket.id
             }
             refund = await db('se_project.refund_requests')
-            .where('status' ,ride.status)
+            .where('status' ,"Accepted")
             .where('refundamount' , tran.amount)
             .insert(refund_data);
             }else{
@@ -132,13 +132,13 @@ module.exports = function (app) {
           return res.status(200).send("Ticket Refunded!");
         } else if (ride.status === "Expired") {
           const refund_data = {
-            status:ride.status,
+            status:"Rejected",
             userid:user.userid,
             refundamount:tran.amount,
             ticketid:ticket.id
          }
          refund = await db('se_project.refund_requests')
-         .where('status' ,ride.status)
+         .where('status' , "Rejected")
          .where('refundamount' , tran.amount)
          .insert(refund_data);
           return res.status(400).send("You cannot refund an expired ticket.");
@@ -625,14 +625,20 @@ else{
 // using knex library and express js
 app.put("/api/v1/ride/simulate", async function (req, res) {
   try {
+    const user = await getUser(req);
     const origin = req.body.origin;
     const destination = req.body.destination;
     const tripDate = req.body.tripDate;
+    ride = await db("se_project.rides").where('userid','=',user.userid)
+    if(ride.length>0){
     await db("se_project.rides")
       .where({ origin: origin, destination: destination, tripdate: tripDate })
       .update({ status: "Active" })
       .returning("*");
     return res.status(200).send("accepted successfully");
+    }else{
+      return res.status(400).send("ride not found");
+    }
   } catch (e) {
     console.log(e);
     return res.status(400).send("error");
