@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Route Management</title>
+    <title>routes </title>
     <link rel='stylesheet' href='/styles/bootstrap.min.css' />
     <link rel='stylesheet' href='/styles/style.css' />
     <script src="/js/jquery-2.2.0.min.js" type="text/javascript"></script>
@@ -11,7 +11,9 @@
     <table class="table">
       <thead>
         <tr>
-          <th scope="col">Route Name</th>
+          <th scope="col">routename</th>
+          <th scope="col">fromstationid</th>
+          <th scope="col">tostationid</th>
           <th scope="col"></th>
         </tr>
       </thead>
@@ -19,41 +21,50 @@
         {{#routes}}
         <tr>
           <td>{{routename}}</td>
-          <td>
-            <input id="txtRoute-{{id}}" type="text" placeholder="New route name">
-            <button class="btn btn-primary" onclick="updateRouteName({{id}})">Update Route Name</button>
-          </td>
+          <td>{{fromstationid}}</td>
+          <td>{{tostationid}}</td>
+
+        
         </tr>
         {{/routes}}
       </tbody>
     </table>
+
     <div class="form-group">
       <div class="col-sm-10 col-sm-offset-2"></div>
     </div>
+
     <script>
-      function updateRouteName(id) {
-        var newRouteName = $('#txtRoute-'+id).val();
-        if (newRouteName !== "") {
-          $.ajax({
-            url: '/api/v1/route/'+id,
-            type: 'PUT',
-            contentType: 'application/json',
-            data: JSON.stringify({
-              routename: newRouteName
-            }),
-            success: function(data) {
-              console.log("message from server", data);
-              $('#txtRoute-'+id).val("");
-              location.reload(); // refresh the page to show updated data
-            },
-            error: function(jqXHR, textStatus, errorThrown) {
-              console.log(textStatus, errorThrown);
-            }
-          });
-        } else {
-          alert("Please enter a new route name");
-        }
-      }
+      $(document).ready(function() {
+  $('form').submit(function(event){  
+    event.preventDefault();
+
+    var id = $(this).attr('id').split('-')[3];
+    var routename = $('#txtRoutename-'+id).val();
+    var url = '/api/v1/route/' + id;
+    if (routename !== "") {
+      $.ajax({
+        type: "PUT",
+        url: url,
+        data: JSON.stringify({
+          routeName: routename   
+        }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "json",
+        success: function (data) {
+          $('#txtRoutename-'+id).val("");
+          console.log("message from server", data);
+          alert("route name updated to: " + data[0].routeName);
+        },
+      });
+    }
+  });
+});
     </script>
   </body>
+  <a href="/manage/routes/create">
+            <button>create route</button>
+        </a>
+    </body>
+
 </html>
